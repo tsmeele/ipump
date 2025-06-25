@@ -74,7 +74,7 @@
 					<configuration>
 					<archive>
 						<manifest>
-							<mainClass>nl.tsmeele.myrods.ipump.PumpMain</mainClass>
+							<mainClass>nl.tsmeele.ipump.PumpMain</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
