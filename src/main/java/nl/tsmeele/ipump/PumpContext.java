@@ -8,7 +8,7 @@ import nl.tsmeele.myrods.high.IrodsObject;
 import nl.tsmeele.myrods.plumbing.MyRodsException;
 
 public class PumpContext {
-	public static final String PROGRAM_NAME = "ipump2";
+	public static final String PROGRAM_NAME = "ipump";
 	private static final String[] REQUIRED_KEYWORDS = {
 			"source_host","source_port","source_username","source_zone","source_password", "source_auth_scheme",
             "destination_host", "destination_port", "destination_username", "destination_zone", 
