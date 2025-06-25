@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.tsmeele</groupId>
-	<artifactId>ipump2</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>ipump2</name>
-	<url>http://github.com/tsmeele/ipump2</url>
+	<artifactId>ipump</artifactId>
+	<version>0.2.0-SNAPSHOT</version>
+	<name>ipump</name>
+	<url>http://github.com/tsmeele/ipump</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
