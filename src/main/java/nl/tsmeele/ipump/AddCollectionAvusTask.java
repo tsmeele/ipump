@@ -12,7 +12,7 @@ import nl.tsmeele.myrods.high.AVU;
 import nl.tsmeele.myrods.high.Collection;
 import nl.tsmeele.myrods.high.IrodsUser;
 
-public class AddCollectionAvusTask extends Task {
+public class AddCollectionAvusTask extends nl.tsmeele.ipump.Task {
 	private Collection coll;
 
 	public AddCollectionAvusTask(IrodsUser clientUser, boolean runAsAgent, String precondition, Collection coll) {
@@ -84,7 +84,7 @@ public class AddCollectionAvusTask extends Task {
 			if (name.startsWith("org_publication") ||
 				name.equals("org_action_log") ||
 				name.equals("org_license_uri") ||
-				name.equals("org_status")) {
+				name.equals("org_vault_status")) {
 				out.add(avu);
 				continue;
 			}

@@ -23,7 +23,7 @@ import nl.tsmeele.myrods.high.IrodsUser;
 import nl.tsmeele.myrods.plumbing.MyRodsException;
 
 public class PumpMain {
-	static PumpContext ctx = null;
+	static nl.tsmeele.ipump.PumpContext ctx = null;
 	static Hirods source, dest;
 	
 	public static void main(String[] args) throws IOException {
