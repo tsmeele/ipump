@@ -80,7 +80,7 @@ public class AddDataObjectAvusTask extends Task {
 
 	private static boolean isVaultSpace(String path) {
 		String[] components = path.split("/");
-		if (components.length >= 3 && components[2].startsWith("vault-")) {
+		if (components.length >= 4 && components[3].startsWith("vault-")) {
 			return true;
 		}
 		return false;
