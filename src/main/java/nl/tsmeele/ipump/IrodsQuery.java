@@ -63,31 +63,33 @@ public class IrodsQuery {
 		InxIvalPair inxIvalPair = new InxIvalPair();
 		inxIvalPair.put(Columns.COLL_NAME.getId(), Flag.SELECT_NORMAL);	
 		inxIvalPair.put(Columns.COLL_OWNER_NAME.getId(), Flag.SELECT_NORMAL);	
-		inxIvalPair.put(Columns.COLL_OWNER_ZONE.getId(), Flag.SELECT_NORMAL);	
+		inxIvalPair.put(Columns.COLL_OWNER_ZONE.getId(), Flag.SELECT_NORMAL);
+		inxIvalPair.put(Columns.META_COLL_ATTR_VALUE.getId(), Flag.SELECT_NORMAL);
 		// where clause for collection
 		InxValPair inxValPairColl = new InxValPair();
 		inxValPairColl.put(Columns.COLL_NAME.getId(), "= '" + collPath + "'");
 		inxValPairColl.put(Columns.META_COLL_ATTR_NAME.getId(), "= '" + ORG_STATUS + "'");
-		inxValPairColl.put(Columns.META_COLL_ATTR_VALUE.getId(), "!= '" + SECURED + "'");
-		inxValPairColl.put(Columns.META_COLL_ATTR_VALUE.getId(), "!= '" + REJECTED + "'");
-		inxValPairColl.put(Columns.META_COLL_ATTR_VALUE.getId(), "!= '" + EMPTY + "'");
+		//inxValPairColl.put(Columns.META_COLL_ATTR_VALUE.getId(), "!= '" + SECURED + "'");
+		//inxValPairColl.put(Columns.META_COLL_ATTR_VALUE.getId(), "!= '" + REJECTED + "'");
+		//inxValPairColl.put(Columns.META_COLL_ATTR_VALUE.getId(), "!= '" + EMPTY + "'");
 		// where clause for all subcollections
 		InxValPair inxValPairSub  = new InxValPair();
 		inxValPairSub.put(Columns.COLL_NAME.getId(), "like '" + collPath + "/%" + "'");
 		inxValPairSub.put(Columns.META_COLL_ATTR_NAME.getId(), "= '" + ORG_STATUS + "'");
-		inxValPairSub.put(Columns.META_COLL_ATTR_VALUE.getId(), "!= '" + SECURED + "'");
-		inxValPairColl.put(Columns.META_COLL_ATTR_VALUE.getId(), "!= '" + REJECTED + "'");
-		inxValPairSub.put(Columns.META_COLL_ATTR_VALUE.getId(), "!= '" + EMPTY + "'");
+		//inxValPairColl.put(Columns.META_COLL_ATTR_VALUE.getId(), "!= '" + SECURED + "'");
+		//inxValPairSub.put(Columns.META_COLL_ATTR_VALUE.getId(), "!= '" + SECURED + "'");
+		//inxValPairColl.put(Columns.META_COLL_ATTR_VALUE.getId(), "!= '" + REJECTED + "'");
+		//inxValPairSub.put(Columns.META_COLL_ATTR_VALUE.getId(), "!= '" + EMPTY + "'");
 		int maxRows = 256;
 
 		// query the collection itself
 		GenQueryInp genQueryInp = new GenQueryInp(maxRows, 0, 0, 0,
 				new KeyValPair(), inxIvalPair , inxValPairColl);
-		out.addAll(runGetCollectionQuery(hirods, genQueryInp));
+		out.addAll(runGetCollectionForWorkflowsQuery(hirods, genQueryInp));
 		// query subcollections
 		genQueryInp = new GenQueryInp(maxRows, 0, 0, 0,
 				new KeyValPair(), inxIvalPair , inxValPairSub);
-		out.addAll(runGetCollectionQuery(hirods, genQueryInp));
+		out.addAll(runGetCollectionForWorkflowsQuery(hirods, genQueryInp));
 		return out;
 	}
 	
@@ -151,6 +153,26 @@ public class IrodsQuery {
 		genQueryInp = new GenQueryInp(maxRows, 0, 0, 0,
 				new KeyValPair(), inxIvalPair , inxValPair);
 		out.addAll(runGetDataObjectQuery(hirods, genQueryInp));
+		return out;
+	}
+	
+	private static List<Collection> runGetCollectionForWorkflowsQuery(Hirods hirods, GenQueryInp genQueryInp) throws MyRodsException, IOException {
+		List<Collection> out = new ArrayList<Collection>();
+		Iterator<GenQueryOut> it = hirods.genQueryIterator(genQueryInp);
+		while (it.hasNext()) {
+			GenQueryOut genOut = it.next();
+			for (int i = 0; i < genOut.rowCount; i++) {
+				Collection coll = new Collection(
+					genOut.data[i][0], // collName
+					genOut.data[i][1], // collOwnerName
+					genOut.data[i][2]); // collOwnerZone
+				String orgStatus = genOut.data[i][3]; // AVU value for org_status
+				if (orgStatus.equals(SECURED) || orgStatus.equals(REJECTED) || orgStatus.equals(EMPTY)) {
+					continue;
+				}
+				out.add(coll);
+			}
+		}
 		return out;
 	}
 	
