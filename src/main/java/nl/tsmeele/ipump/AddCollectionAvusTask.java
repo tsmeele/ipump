@@ -40,9 +40,12 @@ public class AddCollectionAvusTask extends nl.tsmeele.ipump.Task {
 			
 		} else {
 			// RESEARCH METADATA
-			// - filter out attributes with name like "org_%"
+			// - keep metadata with name = 'org_status' and with name = 'org_action_log'
+			// - filter out other attributes with name like "org_%"
 			// - keep all other metadata as-is
-			avus = avus.stream().filter(a->!a.name.startsWith("org_")).collect(Collectors.toList());
+			avus = avus.stream().filter(
+					a->!(a.name.startsWith("org_") && !a.name.equals("org_status") && !a.name.equals("org_action_log"))
+					).collect(Collectors.toList());
 		}
 		
 		

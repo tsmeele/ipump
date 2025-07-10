@@ -21,6 +21,7 @@ public class IrodsQuery {
 	public final static String ORG_LOCK = "org_lock";
 	public final static String ORG_STATUS = "org_status";
 	public final static String SECURED = "SECURED";
+	public final static String REJECTED = "REJECTED";
 	public final static String EMPTY = "";
 	
 	
@@ -68,12 +69,14 @@ public class IrodsQuery {
 		inxValPairColl.put(Columns.COLL_NAME.getId(), "= '" + collPath + "'");
 		inxValPairColl.put(Columns.META_COLL_ATTR_NAME.getId(), "= '" + ORG_STATUS + "'");
 		inxValPairColl.put(Columns.META_COLL_ATTR_VALUE.getId(), "!= '" + SECURED + "'");
+		inxValPairColl.put(Columns.META_COLL_ATTR_VALUE.getId(), "!= '" + REJECTED + "'");
 		inxValPairColl.put(Columns.META_COLL_ATTR_VALUE.getId(), "!= '" + EMPTY + "'");
 		// where clause for all subcollections
 		InxValPair inxValPairSub  = new InxValPair();
 		inxValPairSub.put(Columns.COLL_NAME.getId(), "like '" + collPath + "/%" + "'");
 		inxValPairSub.put(Columns.META_COLL_ATTR_NAME.getId(), "= '" + ORG_STATUS + "'");
 		inxValPairSub.put(Columns.META_COLL_ATTR_VALUE.getId(), "!= '" + SECURED + "'");
+		inxValPairColl.put(Columns.META_COLL_ATTR_VALUE.getId(), "!= '" + REJECTED + "'");
 		inxValPairSub.put(Columns.META_COLL_ATTR_VALUE.getId(), "!= '" + EMPTY + "'");
 		int maxRows = 256;
 
