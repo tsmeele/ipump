@@ -40,11 +40,13 @@ public class AddCollectionAvusTask extends nl.tsmeele.ipump.Task {
 			
 		} else {
 			// RESEARCH METADATA
-			// - keep metadata with name = 'org_status' and with name = 'org_action_log'
+			// - keep metadata  with name = 'org_action_log'
+			//   NB: org_status should not be copied, despite SECURED or REJECTED, as this
+			//       would violate Yoda status transitions policy.  Instead we copy as pristine status.
 			// - filter out other attributes with name like "org_%"
 			// - keep all other metadata as-is
 			avus = avus.stream().filter(
-					a->!(a.name.startsWith("org_") && !a.name.equals("org_status") && !a.name.equals("org_action_log"))
+					a->!(a.name.startsWith("org_") && !a.name.equals("org_action_log"))
 					).collect(Collectors.toList());
 		}
 		
