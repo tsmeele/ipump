@@ -324,7 +324,7 @@ public class PumpMain {
 			// rodsAdminLogin failed, attempt to clean up the connection
 			hirods.rcDisconnect();
 		} catch (IOException e) { 
-			Log.error(e.getMessage());
+			Log.error(e.getMessage() + " (while connecting to " + host + ")");
 		}
 		return null;
 	}
