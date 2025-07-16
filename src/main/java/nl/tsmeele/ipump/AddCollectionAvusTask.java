@@ -56,9 +56,14 @@ public class AddCollectionAvusTask extends nl.tsmeele.ipump.Task {
 		options.put(Kw.ADMIN_KW, "");
 		int avuError = 0;
 		for (AVU avu : avus) {
-			Log.debug("AVU to be set on collection " + avu.toString());
+			Log.debug("Collection AVU to be added: " + avu.toString());
 			List<String> args = new ArrayList<String>();
-			args.add("add");
+			if (avu.name.equals("org_status") || avu.name.equals("org_vault_status")) {
+				// Yoda policy requires single value with these AVU's, refuses 'add' operation
+				args.add("set");
+			} else {
+				args.add("add");
+			}
 			args.add("-C");
 			args.add(destPath);
 			args.add(avu.name);
@@ -105,9 +110,7 @@ public class AddCollectionAvusTask extends nl.tsmeele.ipump.Task {
 			out.add(avu);
 		}
 		return out;
-	}
-	
-	
+	}	
 
 	private static boolean isVaultSpace(String path) {
 		String[] components = path.split("/");
