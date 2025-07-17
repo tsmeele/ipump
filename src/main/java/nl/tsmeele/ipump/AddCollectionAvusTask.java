@@ -95,7 +95,7 @@ public class AddCollectionAvusTask extends nl.tsmeele.ipump.Task {
 				name.equals("org_action_log") ||
 				name.equals("org_license_uri") ||
 				// see YDA-6409 finding
-				// TODO: does org_data_package_reference need any value transformation?
+				// value of org_data_package_reference is a UUID
 				name.equals("org_data_package_reference") ||
 				name.equals("org_vault_status")) {
 				out.add(avu);
