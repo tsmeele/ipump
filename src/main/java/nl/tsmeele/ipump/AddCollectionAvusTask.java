@@ -90,14 +90,20 @@ public class AddCollectionAvusTask extends nl.tsmeele.ipump.Task {
 		List<AVU> out = new ArrayList<AVU>();
 		for (AVU avu : inp) {
 			String name = avu.name;
+			// copy org_vault_status along with a migration flag
+			if (name.equals("org_vault_status")) {
+				// sequence matters: the flag needs to preceed the vault status AVU
+				out.add(new AVU("org_enable_migration","yes",""));
+				out.add(avu);
+				continue;
+			}
 			// copy as-is the below AVUs like "org_%":
 			if (name.startsWith("org_publication") ||
 				name.equals("org_action_log") ||
 				name.equals("org_license_uri") ||
 				// see YDA-6409 finding
 				// value of org_data_package_reference is a UUID
-				name.equals("org_data_package_reference") ||
-				name.equals("org_vault_status")) {
+				name.equals("org_data_package_reference")) {
 				out.add(avu);
 				continue;
 			}
