@@ -45,6 +45,7 @@ public class TaskRunner implements Callable<Boolean> {
 				// force a reconnect
 				Log.debug("Max tasks per connection reached, reconnecting");
 				context.disconnect();
+				seq = 0;
 			}
 			
 			// establish server connections for task 
@@ -64,6 +65,7 @@ public class TaskRunner implements Callable<Boolean> {
 				Log.debug("Task has thrown: " + e.getMessage());
 				// establish a clean starting point for next task
 				context.disconnect();
+				seq = 0;
 			}
 		}
 		// make sure any remaining connections are cleaned up after all tasks are done
