@@ -111,12 +111,19 @@ public class PumpMain {
 			dataList = IrodsQuery.getDataObjects(source, ctx.sourceObject.getPath(), true);
 			collList = IrodsQuery.getSubCollections(source, ctx.sourceObject.getPath(), true);
 		}
-
+		
 		// remove objects listed in our exclude list (contains successful transfers as per resume log)
+		// but keep a list of excluded collections, this is needed to check access and unblock underlying objects
 		int dataCount = dataList.size();
 		int collCount = collList.size();
 		Log.info("Source object consists of " + dataList.size() + " data objects and " + collList.size() + " subcollections");
-		dataList.removeIf(obj -> excludeList.contains(obj.getPath()));
+		dataList.removeIf(obj -> excludeList.contains(obj.getPath())); 
+		List<Collection> excludedCollections = new ArrayList<Collection>();
+		for (Collection coll:collList) {
+			if (excludeList.contains(coll.getPath())) {
+				excludedCollections.add(coll);
+			}
+		}
 		collList.removeIf(obj -> excludeList.contains(obj.getPath()));
 		int dataDiff = dataCount - dataList.size();
 		int collDiff = collCount - collList.size();
@@ -124,7 +131,7 @@ public class PumpMain {
 			Log.info("Skipping " + dataDiff + " data objects found in resume log");
 		}
 		if (collDiff > 0) {
-			Log.info("Skipping " + collDiff + " subsollections found in resume log");
+			Log.info("Skipping " + collDiff + " subcollections found in resume log");
 		}
 		
 		// assemble a set of unique object creators, we aim to act on their behalf during the transfers 
@@ -188,6 +195,20 @@ public class PumpMain {
 			scheduler.addBlockedTask(new RepublishCollectionTask(sourceAdmin, false, Task.AVU_ADDED + coll.getPath(), coll));
 			// Log collection done once any republication reminder has been processed for the collection
 			scheduler.addBlockedTask(new LogCollectionDoneTask(sourceAdmin, false, Task.REPUBLISHED + coll.getPath(), coll));
+		}
+		// for skipped collections, schedule tasks so that underlying objects can be unblocked
+		for (Collection coll : excludedCollections) {
+			IrodsUser agent = sourceAdmin;
+			boolean runAsAgent = false;
+			if (creators.contains(coll.owner)) {
+				agent = coll.owner;
+				runAsAgent = true;
+			}
+			// a collection can be created once its parent collection exists
+			scheduler.addBlockedTask(new CreateCollectionTask(agent, runAsAgent, coll.getParentPath(), coll));
+			// admin access can be added to a collection once the collection exists
+			// Note that compltion will unblock tasks for (data/collection) objects within this collection
+			scheduler.addBlockedTask(new AddAdminAccessToCollectionTask(sourceAdmin, false, coll.getPath(), coll));
 		}
 		for (DataObject data : dataList) {
 			IrodsUser agent = sourceAdmin;
