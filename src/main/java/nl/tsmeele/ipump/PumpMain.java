@@ -207,7 +207,6 @@ public class PumpMain {
 			// a collection can be created once its parent collection exists
 			scheduler.addBlockedTask(new CreateCollectionTask(agent, runAsAgent, coll.getParentPath(), coll));
 			// admin access can be added to a collection once the collection exists
-			// Note that compltion will unblock tasks for (data/collection) objects within this collection
 			scheduler.addBlockedTask(new AddAdminAccessToCollectionTask(sourceAdmin, false, coll.getPath(), coll));
 		}
 		for (DataObject data : dataList) {

@@ -52,7 +52,8 @@ public class TaskScheduler {
 	private final int MAXTHREADS = 8;
 	private int clientThreads = 2; // default
 	private PumpContext ctx;
-	private HashMap<String, Queue<Task>> blocked = new HashMap<String, Queue<Task>>();
+	// as we expect many keys in Map blocked, we initialize with a decent start capacity
+	private HashMap<String, Queue<Task>> blocked = new HashMap<String, Queue<Task>>(100000);
 	private HashMap<String, Queue<Task>> runnable = new HashMap<String, Queue<Task>>();
 	
 	public TaskScheduler(PumpContext ctx, int clientThreads) {
